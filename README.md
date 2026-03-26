@@ -6,7 +6,7 @@
 
 ## 🎬 Live Experience
 
-🔗 *[Add your deployed link here]*
+🔗 https://abyssal-dive.vercel.app/
 
 💡 Best experienced on desktop with sound enabled.
 
@@ -24,6 +24,8 @@ Users begin at the surface and descend through real ocean depth zones, experienc
 * evolving marine life
 * atmospheric transitions
 * and ultimately, the mysterious abyss
+
+> Built as part of a frontend hackathon focused on interactive storytelling and immersive web experiences.
 
 ---
 
