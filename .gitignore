@@ -1,0 +1,17 @@
+# MUST IGNORE
+node_modules/
+dist/
+.vite/
+.env
+.env.*
+*.log
+
+# ALSO IGNORE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# OPTIONAL
+coverage/
+.cache/

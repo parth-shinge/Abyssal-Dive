@@ -1,0 +1,591 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000b1a; /* Backup deep space color */
+  color: white;
+  font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  overscroll-behavior: none; /* Smooth out window bouncing */
+}
+
+.canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+.start-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 320;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(4, 14, 28, 0.08) 0%, rgba(3, 10, 22, 0.4) 100%);
+  backdrop-filter: blur(2px);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  cursor: pointer;
+}
+
+.start-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.start-overlay-message {
+  color: rgba(235, 245, 255, 0.92);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 14px 22px;
+  border: 1px solid rgba(170, 210, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(8, 20, 36, 0.42);
+  box-shadow: 0 0 24px rgba(0, 75, 140, 0.25);
+}
+
+.scroll-container {
+  position: relative;
+  z-index: 10;
+  pointer-events: none; /* Allows interactions with 3D canvas */
+}
+
+.scroll-container.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.section {
+  position: relative;
+  height: 100vh;
+  /* Use to control scroll depth without obscuring canvas */
+}
+
+/* Updated Landing UI */
+.landing-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.landing-content {
+  margin-top: -15vh;
+  animation: fadeIn 2s ease-out;
+  pointer-events: auto; /* Ensure text isn't blocking anything beneath */
+}
+
+.title-glow {
+  font-size: 6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  text-transform: uppercase;
+  margin-bottom: 4rem;
+  opacity: 0.9;
+}
+
+.scroll-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #5a9bd4;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Story Telling Text */
+.story-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* Never block canvas clicks */
+}
+
+.story-content {
+  text-align: center;
+  z-index: 15;
+}
+
+.story-content h2 {
+  font-size: 3.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  margin-bottom: 1rem;
+}
+
+.story-content p {
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: #b0d0ff;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Abyss Ending Typography */
+.abyss-ending .story-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ending-title {
+  font-size: 4.5rem !important;
+  letter-spacing: 0.15em !important;
+  color: #e6f7ff !important;
+  text-shadow: 0 0 30px rgba(0, 50, 255, 0.4) !important;
+  opacity: 0.9;
+}
+
+.depth-marker {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #00ffff !important;
+  letter-spacing: 0.25em;
+  font-size: 1rem !important;
+  text-transform: uppercase;
+  margin-bottom: 3rem !important;
+  font-weight: 500;
+}
+
+.ending-quote {
+  font-size: 1.5rem !important;
+  font-style: italic;
+  color: #88ccee !important;
+  opacity: 0.8;
+  font-weight: 300;
+}
+
+.ending-quote.highlight {
+  font-style: normal;
+  color: #ffffff !important;
+  font-weight: 400;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  margin-top: 1rem !important;
+  font-size: 1.6rem !important;
+}
+
+/* Dialogue Bubble Overlay */
+.dialogue-container {
+  position: fixed;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialogue-bubble {
+  background: rgba(255, 255, 255, 0.95);
+  color: #001a33;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  animation: dialoguePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes dialoguePop {
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Fish Hover HTML Label */
+.fish-hover-label {
+  background: rgba(5, 15, 30, 0.6);
+  backdrop-filter: blur(8px);
+  color: #e0f0ff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(150, 200, 255, 0.2);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  animation: hoverFloatUI 0.15s ease-out forwards;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 300;
+}
+
+@keyframes hoverFloatUI {
+  0% { transform: translateY(10px) scale(0.95); opacity: 0; }
+  100% { transform: translateY(-5px) scale(1); opacity: 1; }
+}
+
+/* Shared Panel Overlay */
+.overlay-container {
+  position: absolute;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s ease;
+}
+
+.overlay-container.active {
+  pointer-events: auto;
+  background: rgba(0, 5, 15, 0.7);
+}
+
+.info-panel {
+  background: rgba(10, 25, 50, 0.85);
+  border: 1px solid rgba(0, 150, 255, 0.3);
+  box-shadow: 0 0 30px rgba(0, 100, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  color: #fff;
+  transform: scale(0.9);
+  opacity: 0;
+  animation: panelOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes panelOpen {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.info-panel h2 {
+  margin-top: 0;
+  color: #66ccff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.info-panel p {
+  color: #b0d0ff;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.info-panel .fact {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(0, 150, 255, 0.2);
+  font-style: italic;
+  color: #00ffff;
+  font-size: 0.95rem;
+}
+
+.close-btn {
+  margin-top: 25px;
+  background: rgba(0, 150, 255, 0.2);
+  border: 1px solid rgba(0, 150, 255, 0.5);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.close-btn:hover {
+  background: rgba(0, 150, 255, 0.4);
+}
+
+/* Scuba Diver HUD */
+.scuba-hud {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scuba-mask-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at center, transparent 35%, rgba(0, 6, 15, 0.7) 70%, rgba(0, 4, 10, 0.95) 100%);
+  box-shadow: inset 0 0 80px 40px rgba(0, 0, 0, 0.8);
+  border-radius: 5% 5% 15% 15%;
+  pointer-events: none;
+}
+
+.crosshair {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(100, 200, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.crosshair.active {
+  transform: translate(-50%, -50%) scale(2.5);
+  background: rgba(100, 255, 200, 1);
+  box-shadow: 0 0 15px rgba(100, 255, 200, 1);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hud-top-right {
+  position: absolute;
+  top: 5vh;
+  right: 5vw;
+  text-align: right;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.15em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.hud-top-right .depth-text {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #66ccff;
+  font-weight: 600;
+}
+
+.hud-top-right .exit-text {
+  font-size: 0.9rem;
+  color: #aaddff;
+  opacity: 0.8;
+}
+
+.hud-bottom-center {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  color: rgba(200, 230, 255, 0.7);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  animation: fadeOutInstructions 4s forwards;
+  pointer-events: none;
+}
+
+.hud-bottom-center p {
+  margin-bottom: 5px;
+}
+
+@keyframes fadeOutInstructions {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; display: none; }
+}
+
+/* Global About & Sound Buttons */
+.global-about-btn, .global-sound-btn {
+  position: fixed;
+  top: 40px;
+  background: rgba(10, 20, 35, 0.6);
+  border: 1px solid rgba(100, 180, 255, 0.4);
+  color: #cceeff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  padding: 10px 24px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  z-index: 1000;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 50, 150, 0.2);
+}
+
+.global-about-btn {
+  right: 40px;
+}
+
+.global-sound-btn {
+  right: 160px;
+}
+
+.global-about-btn:hover, .global-sound-btn:hover {
+  background: rgba(10, 30, 60, 0.8);
+  border-color: rgba(100, 200, 255, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 100, 255, 0.3);
+}
+
+/* Global User Guidance Hint */
+.global-hint {
+  position: fixed;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%) translateY(15px);
+  background: rgba(10, 20, 35, 0.85);
+  border: 1px solid rgba(100, 180, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 100, 255, 0.2);
+  backdrop-filter: blur(8px);
+  color: #cceeff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  padding: 12px 24px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), visibility 0.8s;
+  animation: hintPulse 3s infinite alternate;
+}
+
+.global-hint.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+@keyframes hintPulse {
+  from { box-shadow: 0 4px 15px rgba(0, 50, 150, 0.2); border-color: rgba(100, 180, 255, 0.2); }
+  to { box-shadow: 0 4px 25px rgba(0, 120, 255, 0.4); border-color: rgba(100, 180, 255, 0.4); }
+}
+
+/* Cinematic Depth Counter */
+.depth-counter {
+  position: fixed;
+  top: 5vh;
+  left: 5vw;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: rgba(200, 230, 255, 0.9);
+  text-shadow: 0 0 15px rgba(0, 50, 150, 0.5);
+  z-index: 900;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease, visibility 0.8s;
+  text-transform: uppercase;
+}
+
+.depth-counter.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 768px) {
+  .title-glow {
+    font-size: 3.5rem;
+  }
+  .subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  .story-content h2 {
+    font-size: 2.2rem;
+  }
+  .story-content p {
+    font-size: 1.1rem;
+    padding: 0 1rem;
+  }
+  .ending-title {
+    font-size: 2.8rem !important;
+  }
+  .hud-top-right {
+    top: 10vh;
+    right: 5vw;
+  }
+  .hud-top-right .depth-text {
+    font-size: 0.9rem;
+  }
+  .hud-top-right .exit-text {
+    font-size: 0.75rem;
+  }
+  .depth-counter {
+    top: 10vh;
+    font-size: 0.9rem;
+  }
+  .global-about-btn {
+    right: 20px;
+    top: 20px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+  .global-sound-btn {
+    right: 100px;
+    top: 20px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+  .info-panel {
+    max-width: 90vw;
+    padding: 20px;
+  }
+  .dialogue-bubble {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+  .pov-hint-overlay p {
+    font-size: 0.9rem !important;
+    padding: 8px 16px !important;
+  }
+}
